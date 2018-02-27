@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 import pygame,os,poly
+import loader
 #import stylesheet
 
-style={
+loader.init('color')
+style=loader.stra_to_color(loader.read_db())['default']
+print(style)
+_style={
     u'金神':(((200,200,100),(255,255,0)),5),
     u'金仙':(((200,200,100),(255,255,0)),5),
     u'水神':(((0,255,255),(0,0,180)),5),
@@ -62,7 +66,7 @@ if __name__=='__main__':
     for name,sty in style.items():
         ##print(name,name[0],name[-1])
         ##print(style)
-        surf=generate(name[0],name[1],8,*sty)
+        surf=generate(name[0],'神',8,*sty)
         DISPLAYSURF.blit(surf,((n%3)*100,(n//3)*100))
         n+=1
     pygame.display.update()

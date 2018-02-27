@@ -56,7 +56,7 @@ def color_to_stra(stys):
     return new_dict
 
 default_place={'默认': [(18, 19), (20, 21), (22, 23), (24, 25), (16, 17), (26, 27)]}
-default_color={'defalt':{
+default_color={'default':{
     u'金':((200,200,100),(255,255,0)),
     u'水':((0,255,255),(0,0,180)),
     u'木':((50,255,175),(0,200,0)),
@@ -66,7 +66,7 @@ default_color={'defalt':{
     }}
 
 if __name__=='__main__':
-    init('place')
+    init('color')
     #del stra_dict[list(stra_dict.keys())[0]]
     #write_db(stra_dict)
     if opt=='place':
