@@ -27,9 +27,12 @@ def generate(name,whose,n,color,shadow_width=5):
     surf.fill((0,0,0,0))
     surf1=pygame .surface.Surface(ShapeObj.rect).convert_alpha()
     surf1.fill((0,0,0,0))
-    r=(start_color[0]-central_color[0])/40
-    g=(start_color[1]-central_color[1])/40
-    b=(start_color[2]-central_color[2])/40
+    r0=central_color[0]
+    g0=central_color[1]
+    b0=central_color[2]
+    r=(start_color[0]-r0)/40
+    g=(start_color[1]-g0)/40
+    b=(start_color[2]-b0)/40
     FontObj=pygame.font.Font('STXINWEI.ttf',font_size)
     Whosurf=FontObj.render(whose,True,(180,180,180)).convert_alpha()
     rect=Whosurf.get_rect()
@@ -37,8 +40,7 @@ def generate(name,whose,n,color,shadow_width=5):
     surf.blit(Whosurf,rect)
     for i in range(40,0,-1):
         factor=0.9 #影响渐变效果
-        color=(central_color[0]+r*i*factor,central_color[1]+g*i*factor,
-               central_color[2]+b*i*factor,220)
+        color=(r0+r*i*factor,g0+g*i*factor,b0+b*i*factor,220)
         ShapeObj=poly.poly(n=n,center=center,size=i)
         pygame.draw.polygon(surf1,color,ShapeObj.points,0)
     surf.set_alpha(100)
