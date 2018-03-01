@@ -27,6 +27,8 @@ hlightdict['Six']=highlight
 #boomsound = pygame.mixer.Sound(files_sound_boomsound)
 FPS=5
 fpsClock=pygame.time.Clock()
+loader.init('color')
+style=loader.stra_to_color(loader.read_db())['default']
 turn='神'
 #hlightflag=False
 firstchess= None
@@ -76,10 +78,13 @@ class Block:
 def getpic(name):
     whose=name[-1:]
     myname=name[:-1]
-    sty=chessdrawer.style[name]
-    return(chessdrawer.generate(myname,whose,8,*sty),\
-           chessdrawer.generate(myname,whose,6,*sty))
+    
+    sty=style[myname]
+    #print(sty)
+    return(chessdrawer.generate(myname,whose,8,sty),\
+           chessdrawer.generate(myname,whose,6,sty))
 def setchess():
+    loader.init('place')
     sdict=loader.read_db()
     poses=sdict[list(sdict.keys())[0]]
     atris=list(attribute.keys())[:-1]

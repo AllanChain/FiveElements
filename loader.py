@@ -25,7 +25,7 @@ def read_db():
             name=(name.decode()).replace('\x00','')
             str2=f.read(size)
             stra_dict[name]=pose2
-    pprint(stra_dict)
+    #pprint(stra_dict)
     return stra_dict
 def write_db(stra_dict):
     with open('Strategy/'+file_name,'wb') as f:
@@ -75,4 +75,4 @@ if __name__=='__main__':
     if opt=='color':
         write_db(color_to_stra(default_color))
         stra_dict=read_db()
-        pprint(stra_to_color(stra_dict))
+        #pprint(stra_to_color(stra_dict))

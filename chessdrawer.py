@@ -66,7 +66,12 @@ if __name__=='__main__':
     for name,sty in style.items():
         ##print(name,name[0],name[-1])
         ##print(style)
-        surf=generate(name[0],'神',8,*sty)
+        #print('#'*12)
+        #print(sty)
+        surf=generate(name[0],'神',8,sty)
+        DISPLAYSURF.blit(surf,((n%3)*100,(n//3)*100))
+        n+=1
+        surf=generate(name[0],'仙',8,sty)
         DISPLAYSURF.blit(surf,((n%3)*100,(n//3)*100))
         n+=1
     pygame.display.update()
