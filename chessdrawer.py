@@ -58,7 +58,6 @@ def generate(name,whose,n,color,shadow_width=5):
         pygame.draw.polygon(surf1,color,ShapeObj.points,0)
     surf.set_alpha(100)
     surf.blit(surf1,(0,0))
-    FontObj=pygame.font.Font('STXINWEI.ttf',50)
     Namesurf=pygame.image.load('Images/%s.png'%dict_name[name])
     rect=Namesurf.get_rect()
     rect.center=center

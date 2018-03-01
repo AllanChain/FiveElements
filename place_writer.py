@@ -1,8 +1,6 @@
 from FiveElements import *
 
 def main():
-    def main():
-    global turn
     setchess()
     hlightflag=None
     cpos=0
@@ -34,27 +32,17 @@ def main():
                 if firstchess != None:#对称改变双方
                    #and blockinfo.chess==None:
                     tryblock=cpos
-                    cango= tryblock in posdic[firstpos].cangos
-                    boomit=False
-                    if blockinfo.chess!= None:
-                        if blockinfo.chess.whose!=turn and cango:
-                            cango=eatable(firstchess,blockinfo.chess,tryblock)
-                            print(cango)
-                            if cango:
-                                boomit=True
-                        elif blockinfo.chess.whose==turn:
-                            firstchess=blockinfo.chess
-                            firstpos=cpos
-                            print ('firstchess set')
-                            cango=None
-                    if cango:
-                        move(tryblock,firstpos,boomit)
-                        turn='仙' if turn=='神' else '神'
-                        firstchess=None
-                    elif cango!=None:
-                        firstchess=None
-                        firstpos=0
-                elif firstchess==None and blockinfo.chess!=None and blockinfo.chess.whose==turn:
+                    print(cpos)
+                    chessinblock=posdic[tryblock].chess
+                    move(tryblock,firstpos)
+                    move(55-tryblock,55-firstpos)
+                    if chessinblock!= None:
+                        print('-'*12,chessinblock)
+                        move(firstpos,tryblock)
+                        move(55-firstpos,55-tryblock)
+                    firstchess=None
+                    
+                elif firstchess==None and blockinfo.chess!=None:
                     firstchess=blockinfo.chess
                     firstpos=cpos
                     print ('firstchess set')
