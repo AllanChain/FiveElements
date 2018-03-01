@@ -20,10 +20,18 @@ _style={
     u'王仙':(((255,50,100),(0,200,0)),5),
     u'王神':(((255,50,100),(0,200,0)),5),
     }
+dict_name={'神':'A',
+           '仙':'B',
+           '金':'Medal',
+           '水':'Water',
+           '木':'Wood',
+           '火':'Fire',
+           '土':'Earth',
+           '王':'King'}
 
 def generate(name,whose,n,color,shadow_width=5):
     start_color,central_color=color
-    font_size=80 if n==8 else 72
+    ease=lambda i:i**0.5
     ShapeObj=poly.poly(n=n,leftop=(0,0),size=39)
     center=(ShapeObj.rect[0]//2,ShapeObj.rect[1]//2)
     #print(ShapeObj.rect)
@@ -37,21 +45,21 @@ def generate(name,whose,n,color,shadow_width=5):
     r=(start_color[0]-r0)/40
     g=(start_color[1]-g0)/40
     b=(start_color[2]-b0)/40
-    FontObj=pygame.font.Font('STXINWEI.ttf',font_size)
-    Whosurf=FontObj.render(whose,True,(180,180,180)).convert_alpha()
+    Whosurf=pygame.image.load('Images/%s.png'%dict_name[whose])
+    if n==6:
+        Whosurf=pygame.transform.scale(Whosurf,(72,74))
     rect=Whosurf.get_rect()
     rect.center=center
     surf.blit(Whosurf,rect)
     for i in range(40,0,-1):
-        factor=0.9 #影响渐变效果
+        factor=ease(i/40) #影响渐变效果
         color=(r0+r*i*factor,g0+g*i*factor,b0+b*i*factor,220)
         ShapeObj=poly.poly(n=n,center=center,size=i)
         pygame.draw.polygon(surf1,color,ShapeObj.points,0)
     surf.set_alpha(100)
     surf.blit(surf1,(0,0))
     FontObj=pygame.font.Font('STXINWEI.ttf',50)
-    Namesurf=FontObj.render(name,True,(180,180,180,100)).convert_alpha()
-    Namesurf.set_alpha(8)
+    Namesurf=pygame.image.load('Images/%s.png'%dict_name[name])
     rect=Namesurf.get_rect()
     rect.center=center
     surf.blit(Namesurf,rect)
@@ -64,14 +72,10 @@ if __name__=='__main__':
     DISPLAYSURF.fill((255,255,255))
     n=0
     for name,sty in style.items():
-        ##print(name,name[0],name[-1])
-        ##print(style)
-        #print('#'*12)
-        #print(sty)
         surf=generate(name[0],'神',8,sty)
         DISPLAYSURF.blit(surf,((n%3)*100,(n//3)*100))
         n+=1
-        surf=generate(name[0],'仙',8,sty)
+        surf=generate(name[0],'仙',6,sty)
         DISPLAYSURF.blit(surf,((n%3)*100,(n//3)*100))
         n+=1
     pygame.display.update()
