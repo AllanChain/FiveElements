@@ -196,14 +196,14 @@ def start():
 ##        posdic[k].cangos=v
     for i in range(56):
         
-        posdic[i].coords=posdic[i].shape.leftop
+        posdic[i].coords=posdic[i].shape.topleft
         chessurf=pygame.image.load(posdic[i].type+'.png')
         if posdic[i].type=='Eight':
             chessurf=pygame.transform.scale(chessurf,(int(size*2.4),int(size*2.4)))
         else:
             
             chessurf=pygame.transform.scale(chessurf,(size*2,int(size*1.7)))
-        background.blit(chessurf,posdic[i].shape.leftop)
+        background.blit(chessurf,posdic[i].shape.topleft)
         
 
     

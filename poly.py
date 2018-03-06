@@ -16,8 +16,8 @@ class commonPoly:
     def collide(self,p):
         x,y=p
         linein=[]
-        if not (self.leftop[0]<=x<=self.leftop[0]+self.rect[0] and \
-               self.leftop[1]<=y<=self.leftop[1]+self.rect[1]):#in the rect
+        if not (self.topleft[0]<=x<=self.topleft[0]+self.rect[0] and \
+               self.topleft[1]<=y<=self.topleft[1]+self.rect[1]):#in the rect
            return False
         flag=1 if self.points[-1][0]<=x else -1
         for i in range(-1,self.n-1):
@@ -42,8 +42,8 @@ class commonPoly:
         ans=True if num%2==1 else False
         return ans
 class poly(commonPoly):
-    def __init__(self,n,r=None,size=None,leftop=(0,0),center=None,lie=True):
-        '''def __init__(self,n,r=None,size=None,leftop=(0,0),lie=True)
+    def __init__(self,n,r=None,size=None,topleft=(0,0),center=None,lie=True):
+        '''def __init__(self,n,r=None,size=None,topleft=(0,0),lie=True)
 n is the num of size of the poly;
 '''
         assert n<=20,'n is too large'
@@ -54,7 +54,7 @@ n is the num of size of the poly;
         if size!=None and r==None:
             r=(size/2)/sin(pi/n)
         
-            #leftop=(size/2)/sin(pi/n)
+            #topleft=(size/2)/sin(pi/n)
         if n % 2==0:#if it's an even one
             if n%4==2:
                 rect=(r*2,r*2*cos(pi/n)) if lie else (r*2*cos(pi/n),r*2)
@@ -67,9 +67,9 @@ n is the num of size of the poly;
             sx=r*sin((n//2)*pi/n)
             sy=r if lie else r*cos(pi/n)
         if center!=None:
-            leftop=(center[0]-rect[0]/2,center[1]-rect[1]/2)
+            topleft=(center[0]-rect[0]/2,center[1]-rect[1]/2)
             #print(rect)
-        x,y=leftop
+        x,y=topleft
         sx+=x
         sy+=y
         sang=pi/n if lie else 0#start angle
@@ -78,7 +78,7 @@ n is the num of size of the poly;
         for i in range(n):
             ang=i*step+sang
             points.append((int(sx+sin(ang)*r),int(sy+cos(ang)*r)))
-        self.rect,self.leftop,self.points=rect,leftop,points
+        self.rect,self.topleft,self.points=rect,topleft,points
         self.n,self.r,self.size=n,r,size
         #print(sx)
     def __str__(self):
