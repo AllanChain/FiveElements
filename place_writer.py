@@ -42,6 +42,19 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
         animate(tryblock,firstpos,tempObj2)
         #posdic[firstpos].chess=tempObj2
     return
+
+def save_stra():
+    filt=lambda b:b[1].chess!=None and b[1].chess.whose=='神'
+    chesses=list(filter(filt,posdic.items()))
+    chesses=list(map(lambda x:(x[0],x[1].chess),chesses))
+    poses={k:[] for k,v in attribute.items()}
+    print(poses)
+    for k,v in chesses:
+        poses[v.name[0]].append(k)
+        print(k,v)
+    poses['王'].append(0)
+    poses=list(map(tuple,poses.values()))
+    print(poses)
 def main():
     setchess()
     hlightflag=None
@@ -68,6 +81,8 @@ def main():
                 if event.key==K_ESCAPE:
                     pygame.quit()
                     return
+                if event.key==K_s:
+                    save_stra()
             elif event.type==MOUSEBUTTONDOWN and blockinfo!=None\
                  and event.button==1:
                 cango=False
