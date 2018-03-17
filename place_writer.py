@@ -1,8 +1,25 @@
 from FiveElements import *
 from math import copysign
 from random import random
+import loader
 
+loader.init('place')
+stra_dict=loader.read_db()
 MOVING=[]
+
+def setchess():
+    loader.init('place')
+    sdict=loader.read_db()
+    name=input('Please enter the name of map to edit:')
+    poses=sdict.get(name,loader.default_place['默认'])
+    atris=list(attribute.keys())[:-1]
+    for i in range (5):
+        for j in (0,1):
+            #print(sdict[i])
+            Chess(atris[i]+'神',poses[i][j])
+            Chess(atris[i]+'仙',55-poses[i][j])
+    Chess('王神',poses[5][0])
+    Chess('王仙',55-poses[5][0])
 def move (tryblock,firstpos,swap=False,speed=30):
     '''To move a chess to another place and make the animation.
 
@@ -53,7 +70,10 @@ def save_stra():
         print(k,v)
     poses['王'].append(0)
     poses=list(map(tuple,poses.values()))
-    print(poses)
+    name=input('Please input your map name:')
+    stra_dict[name]=poses
+    print(name,poses,stra_dict)
+    loader.write_db(stra_dict,mode='a')
 def move_animate():
     global FPS
     DISPLAYSURF.blit(background,(0,0))
@@ -132,5 +152,7 @@ def main():
             DISPLAYSURF.blit(hlightdict[blockinfo.type],blockinfo.coords)
         pygame.display.update()
         fpsClock.tick(FPS)
-start()
-main()
+if __name__=='__main__':
+    start()
+    main()
+

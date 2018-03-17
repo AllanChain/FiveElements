@@ -27,8 +27,8 @@ def read_db():
             stra_dict[name]=pose2
     #pprint(stra_dict)
     return stra_dict
-def write_db(stra_dict):
-    with open('Strategy/'+file_name,'wb') as f:
+def write_db(stra_dict,mode='w'):
+    with open('Strategy/'+file_name,'%sb'%mode) as f:
         for name,poses in stra_dict.items():
             pose2=list(map(lambda x:(x[0]<<8)+x[1],poses))
             buffers=struct.pack(pattern,name.encode(),*pose2)
@@ -66,13 +66,14 @@ default_color={'default':{
     }}
 
 if __name__=='__main__':
-    init('color')
+    init('place')
     #del stra_dict[list(stra_dict.keys())[0]]
     #write_db(stra_dict)
     if opt=='place':
-        write_db(default_place)
+        #write_db(default_place)
         stra_dict=read_db()
+        pprint(stra_dict)
     if opt=='color':
-        write_db(color_to_stra(default_color))
+        #write_db(color_to_stra(default_color))
         stra_dict=read_db()
-        #pprint(stra_to_color(stra_dict))
+        pprint(stra_to_color(stra_dict))
