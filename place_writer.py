@@ -1,6 +1,8 @@
 from FiveElements import *
 from math import copysign
+from random import random
 
+MOVING=[]
 def move (tryblock,firstpos,swap=False,speed=30):
     '''To move a chess to another place and make the animation.
 
@@ -21,25 +23,22 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
         posdic[tryblock].chess= None
     posdic[firstpos].chess=None
     def animate(firstpos,tryblock,tempObj):
-        flag=True
         oldx,oldy=posdic[firstpos].coords
         newx,newy=posdic[tryblock].coords
         movevecter=Vecter2((newx-oldx),(newy-oldy))
         movevecter.normalize()
-        while flag:
+        while True:
             oldx+=copysign(min(abs(speed*movevecter.x),abs(newx-oldx)),movevecter.x)
             oldy+=copysign(min(abs(speed*movevecter.y),abs(newy-oldy)),movevecter.y)
-            DISPLAYSURF.blit(background,(0,0))
             DISPLAYSURF.blit(tempObj.actpic,(oldx,oldy))
-            time.sleep(0.05)
-            drawchess()
-            pygame.display.update()
+            #time.sleep(0.05
             if oldx==newx and oldy==newy:
-                flag=False
+                break
+            yield None
         posdic[tryblock].chess=tempObj
-    animate(firstpos,tryblock,tempObj)
+    MOVING.append(animate(firstpos,tryblock,tempObj))
     if swap:
-        animate(tryblock,firstpos,tempObj2)
+        MOVING.append(animate(tryblock,firstpos,tempObj2))
         #posdic[firstpos].chess=tempObj2
     return
 
@@ -55,12 +54,33 @@ def save_stra():
     poses['王'].append(0)
     poses=list(map(tuple,poses.values()))
     print(poses)
+def move_animate():
+    global FPS
+    DISPLAYSURF.blit(background,(0,0))
+    drawchess()
+    if MOVING!=[]:
+        removes=[]
+        FPS=30
+        for i in MOVING:
+            try:
+                next(i)
+            except StopIteration:
+                removes.append(i)
+        for i in removes:
+            MOVING.remove(i)
+        pygame.display.update()
+        if random()>0.7:
+            print(removes)
+    FPS=10
 def main():
     setchess()
+    DISPLAYSURF.blit(background,(0,0))#画图
+    drawchess()
     hlightflag=None
     cpos=0
     global firstchess
     while True:
+        move_animate()
         mou=pygame.mouse.get_pos()
         blockinfo=None
         for j in posdic.keys():
@@ -86,26 +106,28 @@ def main():
             elif event.type==MOUSEBUTTONDOWN and blockinfo!=None\
                  and event.button==1:
                 cango=False
-                if firstchess != None:#对称改变双方
+                tryblock=cpos
+                print(cpos)
+                chessinblock=posdic[tryblock].chess
+                if firstchess != None and chessinblock != firstchess:#对称改变双方
                    #and blockinfo.chess==None:
-                    tryblock=cpos
-                    print(cpos)
-                    chessinblock=posdic[tryblock].chess
                     swap=False
-                    if chessinblock!= None:
-                        print('-'*12,chessinblock)
-                        swap=True
-                    move(tryblock,firstpos,swap)
-                    move(55-tryblock,55-firstpos,swap)
-                    
+                    if firstpos+tryblock!=55:
+                        if chessinblock!= None :
+                            print('-'*12,chessinblock)
+                            swap=True
+                        move(tryblock,firstpos,swap)
+                        move(55-tryblock,55-firstpos,swap)
+                    else:
+                        move(tryblock,firstpos,True)
                     firstchess=None
                     
                 elif firstchess==None and blockinfo.chess!=None:
                     firstchess=blockinfo.chess
                     firstpos=cpos
                     print ('firstchess set')
-        DISPLAYSURF.blit(background,(0,0))#画图
-        drawchess()
+##        DISPLAYSURF.blit(background,(0,0))#画图
+##        drawchess()
         if hflag:
             DISPLAYSURF.blit(hlightdict[blockinfo.type],blockinfo.coords)
         pygame.display.update()
