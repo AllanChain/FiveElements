@@ -1,6 +1,6 @@
 #*_* coding:utf-8 *_*
 import pygame,time,math,poly,chessdrawer
-import loader
+import loader,putin
 from pygame.locals import*
 
 pygame.init()
@@ -8,6 +8,7 @@ posdic={}
 hlightdict={}
 hlight_color=(0,200,200,100)
 DISPLAYSURF=pygame.display.set_mode((1024,650),0,32)
+NAME=''
 pygame.display.set_caption('Fighting...')
 files_image_background = 'backimage.jpg'
 files_image_highlight ='blockhlight.png'
@@ -83,10 +84,28 @@ def getpic(name):
     #print(sty)
     return(chessdrawer.generate(myname,whose,8,sty),\
            chessdrawer.generate(myname,whose,6,sty))
+def get_input(items):
+    global NAME
+    mylister=putin.Lister(items,DISPLAYSURF,pos=(0,0),max_list=4)
+    while True:
+        DISPLAYSURF.blit(background,(0,0))
+        mylister.update()
+        pygame.display.update()
+        for event in pygame.event.get():
+            item=mylister.react(event)
+            if event.type==QUIT:
+                pygame.quit()
+                _exit(0)
+            if item!=None:
+                NAME=item
+                return
+            time.sleep(0.2)
 def setchess():
     loader.init('place')
     sdict=loader.read_db()
-    poses=sdict[list(sdict.keys())[0]]
+    get_input(items=[i for i in sdict.keys()])
+    #poses=sdict[list(sdict.keys())[0]]
+    poses=sdict[NAME]
     atris=list(attribute.keys())[:-1]
     for i in range (5):
         for j in (0,1):

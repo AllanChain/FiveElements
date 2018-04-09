@@ -56,6 +56,8 @@ class Lister:
             return self.items[self.head+y//self.height]
     def enter(self):
         return self.items[self.focus]
+    def callback(self,item):
+        return item
     def react(self,event):
         if event.type==MOUSEBUTTONDOWN:
             if event.button in (4,5):
@@ -63,13 +65,13 @@ class Lister:
             elif event.button==1:
                 item=self.click(event.pos[0]-self.pos[0],
                                     event.pos[1]-self.pos[1])
-                self.callback(item)
-        if event.type==KEYDOWN:
+                return self.callback(item)
+        elif event.type==KEYDOWN:
             if event.key in(273,274):
                 self.scroll(event.key*2-547)
             elif event.key==K_RETURN:
                 item=self.enter()
-                self.callback(item)
+                return self.callback(item)
 def main():
     DIS=pygame.display.set_mode((500,500))
     DIS.fill((255,255,255))

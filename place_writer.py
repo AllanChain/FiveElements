@@ -1,17 +1,18 @@
 from FiveElements import *
 from math import copysign
 from random import random
-import loader
+import loader#,putin
+from os import _exit
 
 loader.init('place')
 stra_dict=loader.read_db()
 MOVING=[]
+NAME=''
 
 def setchess():
-    loader.init('place')
-    sdict=loader.read_db()
-    name=input('Please enter the name of map to edit:')
-    poses=sdict.get(name,loader.default_place['默认'])
+    get_input(items=[i for i in stra_dict.keys()])
+##    name=input('Please enter the name of map to edit:')
+    poses=stra_dict.get(NAME,loader.default_place['默认'])
     atris=list(attribute.keys())[:-1]
     for i in range (5):
         for j in (0,1):
@@ -70,10 +71,13 @@ def save_stra():
         print(k,v)
     poses['王'].append(0)
     poses=list(map(tuple,poses.values()))
-    name=input('Please input your map name:')
-    stra_dict[name]=poses
-    print(name,poses,stra_dict)
-    loader.write_db(stra_dict,mode='a')
+    #name=input('Please input your map name:')
+    stra_dict[NAME]=poses
+    print(NAME,poses,stra_dict)
+    loader.write_db(stra_dict,mode='w')
+    for i in posdic.values():
+        i.chess=None
+    setchess()
 def move_animate():
     global FPS
     DISPLAYSURF.blit(background,(0,0))
@@ -81,13 +85,14 @@ def move_animate():
     if MOVING!=[]:
         removes=[]
         FPS=30
-        for i in MOVING:
+        for i in MOVING[:]:
             try:
                 next(i)
             except StopIteration:
-                removes.append(i)
-        for i in removes:
-            MOVING.remove(i)
+                MOVING.remove(i)
+                #removes.append(i)
+##        for i in removes:
+##            MOVING.remove(i)
         pygame.display.update()
         if random()>0.7:
             print(removes)
