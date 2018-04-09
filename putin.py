@@ -12,6 +12,7 @@ class Lister:
 ##        
 ##        self.height=50
 ##        self.width=200
+        max_list=min(max_list,len(items))
         self.__dict__.update(locals())
         del self.__dict__['self']
         self.SURF=pygame.surface.Surface((self.width,self.height*max_list))
@@ -76,7 +77,7 @@ def main():
     stra_dict=loader.read_db()
     items=[i for i in stra_dict.keys()]
     #items=['诛仙','默认','Default','龙蛇','蛇皮']
-    mylister=Lister(items,DIS,pos=(50,50),max_list=2)
+    mylister=Lister(items,DIS,pos=(50,50),max_list=4)
     mylister.callback=print
     while True:
         for event in pygame.event.get():
