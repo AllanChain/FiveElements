@@ -6,6 +6,7 @@ from os import _exit
 
 loader.init('place')
 stra_dict=loader.read_db()
+print(stra_dict)
 MOVING=[]
 NAME=''
 

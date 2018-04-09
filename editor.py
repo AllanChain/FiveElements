@@ -10,13 +10,15 @@ def add(name,base):
     else:
         raise ValueError('name in items or base does not in items')
 def delete(name):
-    if name in items:
+    if name in list(stra_dict.keys()):
         del stra_dict[name]
+        print(stra_dict)
     else:
         raise ValueError('name does not in items')
 def rename(dest,orig):
     add(dest,orig)
     delete(orig)
 def save():
+    print(stra_dict)
     loader.write_db(stra_dict)
         
