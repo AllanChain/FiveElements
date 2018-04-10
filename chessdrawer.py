@@ -32,7 +32,7 @@ dict_name={'神':'A',
 def generate(name,whose,n,color,shadow_width=5):
     start_color,central_color=color
     ease=lambda i:i**0.5
-    ShapeObj=poly.poly(n=n,leftop=(0,0),size=39)
+    ShapeObj=poly.poly(n=n,topleft=(0,0),size=39)
     center=(ShapeObj.rect[0]//2,ShapeObj.rect[1]//2)
     #print(ShapeObj.rect)
     surf=pygame .surface.Surface(ShapeObj.rect).convert_alpha()

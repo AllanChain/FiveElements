@@ -20,7 +20,7 @@ def drawtri(color,size,alpha=255):
                 GUA.blit(mid,(0,size*2//5))
                 GUA.blit(upper,(0,0))
                 Trigram.append(GUA)
-    temp=poly.poly(n=8,leftop=(size,size),size=size*2)
+    temp=poly.poly(n=8,topleft=(size,size),size=size*2)
     picsurf=pygame .surface.Surface((size*7,size*7)).convert_alpha()
     picsurf.fill((255,255,255,0))
     for i in range(4):
