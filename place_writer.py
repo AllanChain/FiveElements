@@ -11,7 +11,8 @@ MOVING=[]
 NAME=''
 
 def setchess():
-    get_input(items=[i for i in stra_dict.keys()])
+    global NAME
+    NAME=get_input(items=[i for i in stra_dict.keys()])
 ##    name=input('Please enter the name of map to edit:')
     poses=stra_dict.get(NAME,loader.default_place['默认'])
     atris=list(attribute.keys())[:-1]
@@ -67,6 +68,8 @@ def save_stra():
     chesses=list(map(lambda x:(x[0],x[1].chess),chesses))
     poses={k:[] for k,v in attribute.items()}
     print(poses)
+    if len(chesses)!=11:
+        return
     for k,v in chesses:
         poses[v.name[0]].append(k)
         print(k,v)
@@ -99,8 +102,8 @@ def move_animate():
 ##        for i in removes:
 ##            MOVING.remove(i)
         pygame.display.update()
-        if random()>0.7:
-            print(removes)
+##        if random()>0.7:
+##            print(removes)
     FPS=10
 def main():
     setchess()
@@ -131,12 +134,14 @@ def main():
                 if event.key==K_ESCAPE:
                     pygame.quit()
                     return
-                if event.key==K_s:
-                    save_stra()
-                if event.key==K_d:
-                    for i in posdic.values():
-                        i.chess=None
-                    setchess()
+                if len(MOVING)<=1:
+                    print(MOVING)
+                    if event.key==K_s:
+                        save_stra()
+                    if event.key==K_d:
+                        for i in posdic.values():
+                            i.chess=None
+                        setchess()
             elif event.type==MOUSEBUTTONDOWN and blockinfo!=None\
                  and event.button==1:
                 cango=False

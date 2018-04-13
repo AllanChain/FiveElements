@@ -103,7 +103,7 @@ def get_input(items):
                     _exit(0)
             if item!=None:
                 NAME=item
-                return
+                return NAME
             time.sleep(0.2)
 def setchess():
     loader.init('place')
