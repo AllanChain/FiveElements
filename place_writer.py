@@ -79,6 +79,10 @@ def save_stra():
     for i in posdic.values():
         i.chess=None
     setchess()
+def hflag_animate(blockinfo):
+    yield None
+    DISPLAYSURF.blit(hlightdict[blockinfo.type],blockinfo.coords)
+    
 def move_animate():
     global FPS
     DISPLAYSURF.blit(background,(0,0))
@@ -129,6 +133,10 @@ def main():
                     return
                 if event.key==K_s:
                     save_stra()
+                if event.key==K_d:
+                    for i in posdic.values():
+                        i.chess=None
+                    setchess()
             elif event.type==MOUSEBUTTONDOWN and blockinfo!=None\
                  and event.button==1:
                 cango=False
@@ -155,7 +163,8 @@ def main():
 ##        DISPLAYSURF.blit(background,(0,0))#画图
 ##        drawchess()
         if hflag:
-            DISPLAYSURF.blit(hlightdict[blockinfo.type],blockinfo.coords)
+            MOVING.append(hflag_animate(blockinfo))
+##            DISPLAYSURF.blit(hlightdict[blockinfo.type],blockinfo.coords)
         pygame.display.update()
         fpsClock.tick(FPS)
 if __name__=='__main__':
