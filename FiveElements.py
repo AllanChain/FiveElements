@@ -2,6 +2,7 @@
 import pygame,time,math,poly,chessdrawer
 import loader,putin
 from pygame.locals import*
+from os import _exit
 
 pygame.init()
 posdic={}
@@ -96,9 +97,13 @@ def get_input(items):
             if event.type==QUIT:
                 pygame.quit()
                 _exit(0)
+            if event.type==KEYDOWN:
+                if event.key==K_ESCAPE:
+                    pygame.quit()
+                    _exit(0)
             if item!=None:
                 NAME=item
-                return
+                return NAME
             time.sleep(0.2)
 def setchess():
     loader.init('place')
