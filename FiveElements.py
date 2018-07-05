@@ -7,6 +7,9 @@ from os import _exit
 pygame.init()
 DISPLAYSURF=pygame.display.set_mode((1024,650),0,32)
 pygame.display.set_caption('Fighting...')
+loader.init('color')
+style=loader.stra_to_color(loader.read_db())['default']
+turn='神'
 FPS=5
 fpsClock=pygame.time.Clock()
 NAME=''
@@ -16,94 +19,29 @@ attribute={'金':1,
          '火':5,
          '土':3,
          '王':11}
-def start():
-    global block,posdic,DISPLAYSURF#,attribute,show
-    XMAR=2
-    YMAR=40
-    size=40
-    GAP=size
-    for i in range(56):
-        posdic[i]=Block()
-    x=XMAR+size*1.2
-    y=YMAR+size*1.2
-    for i in range(0,15,7):
-        for j in range(4):
-            posdic[i+j].type='Eight'
-            posdic[i+j+38].type='Eight'
-            posdic[i+j].shape=poly.poly(n=8,center=(x,y+j*size*3.4),size=size)
-            posdic[i+j+38].shape=poly.poly(n=8,center=(x+14.2*size+XMAR+2*GAP,y+j*size*3.4),size=size)
-            
-        x+=size*3.4
-    x=XMAR+size*2.9
-    y=YMAR+size*2.9
-    for i in range(0,8,7):
-        for j in range(4,7):
-            
-            posdic[i+j].type='Eight'
-            posdic[i+j+38].type='Eight'
-            posdic[i+j].shape=poly.poly(n=8,center=(x,y+(j-4)*size*3.4),size=size)
-            posdic[i+j+38].shape=poly.poly(n=8,center=(x+14.2*size+XMAR+2*GAP,y+(j-4)*size*3.4),size=size)
-            #print(posdic[i+j].shape)
-        x+=size*3.4
-    for i in range(18,25):
-        posdic[i].type='Six'
-        posdic[i+13].type='Six'
-        posdic[i].shape=poly.poly(n=6,center=(10.2*size+XMAR+GAP,YMAR+0.35*size+0.85*size+1.7*size*(i-18)),size=size)
-        posdic[i+13].shape=poly.poly(n=6,center=(13.2*size+XMAR+GAP,YMAR+0.35*size+0.85*size+1.7*size*(i-18)),size=size)
-    for i in range(25,31):
-        posdic[i].type='Six'
-        posdic[i].shape=poly.poly(n=6,center=(11.7*size+XMAR+GAP,YMAR+0.35*size+1.7*size+1.7*size*(i-25)),size=size)
-    def bond(step,list1,flag=True):
-        for start,end in list1:
-            for i in ((start,end,step),(end,start,-step)):
-                for j in range(*i):
-                    posdic[j].cangos.append(j+i[2])
-                    if flag:
-                        posdic[55-j].cangos.append(55-j-i[2])
-        return
-    def singlebond(list1):
-        for a,*s in list1:
-            for b in s:
-                posdic[a].cangos.append(b)
-                posdic[b].cangos.append(a)
-                posdic[55-a].cangos.append(55-b)
-                posdic[55-b].cangos.append(55-a)
-    bond(3,[(1,7),(2,14),(3,15),(10,16)])
-    bond(4,[(7,15),(0,16),(1,17),(2,10)])
-    bond(1,[(18,24),(25,30),(31,37)],False)
-    for i in range(19,25):
-        bond(6,[(i,i+12)],False)
-        bond(7,[(i-1,i+13)],False)
-    singlebond([(14,18,19),(15,19,20,21),(16,21,22,23),(17,23,24)])
-##    for k,v in cango_dict.cango_dict.items():
-##        posdic[k].cangos=v
-    for i in range(56):
-        
-        posdic[i].coords=posdic[i].shape.topleft
-        chessurf=pygame.image.load(posdic[i].type+'.png')
-        if posdic[i].type=='Eight':
-            chessurf=pygame.transform.scale(chessurf,(int(size*2.4),int(size*2.4)))
-        else:
-            
-            chessurf=pygame.transform.scale(chessurf,(size*2,int(size*1.7)))
-        background.blit(chessurf,posdic[i].shape.topleft)
-        
-
-    
-
 class Block:
-    def __init__(self,board,i):
-        self.board,self.n=board,i
+    def __init__(self,chessboard,i):
+        self.chessboard,self.i=chessboard,i
+        self.g,self.num=self.chessboard.board.get_group(i)
+        self.n=self.g.n
     @property
     def chess(self):
-        return self.board._posdict[self.i]
+        return self.chessboard._posdict[self.i]
+    @chess.setter
+    def chess(self,ch):
+        self.chessboard._posdict[self.i]=ch
+    @property
+    def topleft(self):
+        return self.chessboard.board.get_pos_by_num(self.i)
 class ChessBoard:
     def __init__(self,DIS):
-        self._posdic={}
+        global background
+        self._posdict={}
         self.DIS=DIS
+        self.all_chess=[]
         files_image_background = 'backimage.jpg'
         files_sound_boomsound ='Boomsound.mp3'
-        background = pygame.image.load(files_image_background) .convert_alpha()
+        background=pygame.image.load(files_image_background) .convert_alpha()
         #boomsound = pygame.mixer.Sound(files_sound_boomsound)
         
         #Initializing the high light surfaces
@@ -111,11 +49,11 @@ class ChessBoard:
         hlight_color=(0,200,200,100)
         for n in (6,8):
             t_poly=poly.poly(n=8,topleft=(0,0),size=40)
-            highlight=pygame.surface.Surface(t_poly.wh).convert_alpha()
+            highlight=pygame.surface.Surface(t_poly.rect.iwh).convert_alpha()
             highlight.fill((0,0,0,0))
             pygame.draw.polygon(highlight,hlight_color,t_poly.points,0)
             hlight_pic[n]=highlight
-
+        #Setting up blocks
         XMAR=2
         YMAR=40
         size=40
@@ -130,13 +68,21 @@ class ChessBoard:
                                         15:(19,20,21),
                                         16:(21,22,23),
                                         17:(3,24)})
-        loader.init('color')
-        style=loader.stra_to_color(loader.read_db())['default']
-        turn='神'
+        chess_pics={}
+        chessurf=pygame.image.load('Eight.png')
+        chess_pics[8]=pygame.transform.scale(chessurf,base1.rect.iwh)
+        chessurf=pygame.image.load('Six.png')
+        chess_pics[6]=pygame.transform.scale(chessurf,base2.rect.iwh)
+        for p in self.board:
+            background.blit(chess_pics[p.n],p.topleft)
         firstchess= None
         firstpos=0
     def __getitem__(self,n):
-        return Block(self.board,n)
+        return Block(self,n)
+    def draw(self):
+        for chess in self.all_chess:
+            DISPLAYSURF.blit(chess.actpic,chess.block.topleft)
+        pygame.display.update()
 
 chess_board=ChessBoard(DISPLAYSURF)
 class Chess:
@@ -150,9 +96,11 @@ class Chess:
         self.pics=getpic(name)
         self.actpic=self.pics[chess_board[position].n]
         #self.attribute
-        posdic[position].chess=self
+        chess_board[position].chess=self
+        self.block=chess_board[position]
+        chess_board.all_chess.append(self)
         #xypos=posdic[position]
-        DISPLAYSURF.blit(self.actpic,posdic[position].coords)
+        #DISPLAYSURF.blit(self.actpic,posdic[position].coords)
     def __str__(self):
         return self.name
 
@@ -164,7 +112,6 @@ class Vecter2:
     def normalize(self):
         self.x=self.x/self.dis
         self.y=self.y/self.dis
-
 
 def getpic(name):
     whose=name[-1:]
@@ -286,14 +233,13 @@ def main():
     while True:
         mou=pygame.mouse.get_pos()
         blockinfo=None
-        for j in posdic.keys():
-            if posdic[j].shape.collide(mou):
-                blockinfo=posdic[j]
-                hflag=True
-##                if blockinfo.chess!= None and blockinfo.chess.whose!= turn:
-##                    hflag=False
-                cpos=j
-                break
+        p=chess_board.board.collide(mou)
+        if p!=None:
+            cpos=chess_board.board.coord_to_num(p)
+            blockinfo=chess_board[cpos]
+            hflag=True
+##          if blockinfo.chess!= None and blockinfo.chess.whose!= turn:
+##              hflag=False
         else:
             hflag=False
         for event in pygame.event.get():
@@ -310,7 +256,7 @@ def main():
                 if firstchess != None and firstchess.whose==turn:
                    #and blockinfo.chess==None:
                     tryblock=cpos
-                    cango= tryblock in posdic[firstpos].cangos
+                    cango= tryblock in chess_board[firstpos].board.get_neibors_by_num(firstpos)
                     boomit=False
                     if blockinfo.chess!= None:
                         if blockinfo.chess.whose!=turn and cango:
@@ -334,13 +280,13 @@ def main():
                     firstchess=blockinfo.chess
                     firstpos=cpos
                     print ('firstchess set')
-        DISPLAYSURF.blit(background,(0,0))#画图
-        drawchess()
+        #DISPLAYSURF.blit(background,(0,0))#画图
+        #drawchess()
+        chess_board.draw()
         if hflag:
             DISPLAYSURF.blit(hlightdict[blockinfo.type],blockinfo.coords)
         pygame.display.update()
         fpsClock.tick(FPS)
 
 if __name__=='__main__':
-    start()
     main()

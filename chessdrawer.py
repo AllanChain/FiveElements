@@ -33,11 +33,11 @@ def generate(name,whose,n,color,shadow_width=5):
     start_color,central_color=color
     ease=lambda i:i**0.5
     ShapeObj=poly.poly(n=n,topleft=(0,0),size=39)
-    center=(ShapeObj.rect[0]//2,ShapeObj.rect[1]//2)
+    center=(ShapeObj.rect.icenter)
     #print(ShapeObj.rect)
-    surf=pygame .surface.Surface(ShapeObj.rect).convert_alpha()
+    surf=pygame .surface.Surface(ShapeObj.rect.iwh).convert_alpha()
     surf.fill((0,0,0,0))
-    surf1=pygame .surface.Surface(ShapeObj.rect).convert_alpha()
+    surf1=pygame .surface.Surface(ShapeObj.rect.iwh).convert_alpha()
     surf1.fill((0,0,0,0))
     r0=central_color[0]
     g0=central_color[1]
