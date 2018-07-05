@@ -5,158 +5,17 @@ from pygame.locals import*
 from os import _exit
 
 pygame.init()
-posdic={}
-hlightdict={}
-hlight_color=(0,200,200,100)
 DISPLAYSURF=pygame.display.set_mode((1024,650),0,32)
-NAME=''
 pygame.display.set_caption('Fighting...')
-files_image_background = 'backimage.jpg'
-files_image_highlight ='blockhlight.png'
-files_sound_boomsound ='Boomsound.mp3'
-background = pygame.image.load(files_image_background) .convert_alpha()
-
-highlight=pygame.surface.Surface((96,96)).convert_alpha()
-highlight.fill((0,0,0,0))
-EightObj=poly.poly(n=8,center=(48,48),size=40)
-pygame.draw.polygon(highlight,hlight_color,EightObj.points,0)
-hlightdict['Eight']=highlight
-SixObj=poly.poly(n=6,size=40)
-highlight=pygame.surface.Surface(SixObj.rect).convert_alpha()
-highlight.fill((0,0,0,0))
-pygame.draw.polygon(highlight,hlight_color,SixObj.points,0)
-hlightdict['Six']=highlight
-#boomsound = pygame.mixer.Sound(files_sound_boomsound)
 FPS=5
 fpsClock=pygame.time.Clock()
-loader.init('color')
-style=loader.stra_to_color(loader.read_db())['default']
-turn='神'
-#hlightflag=False
-firstchess= None
-firstpos=0
+NAME=''
 attribute={'金':1,
          '水':4,
          '木':2,
          '火':5,
          '土':3,
-         '王':11}#['Medal','Wood','Earth','Water','Fire']
-
-class Chess:
-    '''Include every chess.'''
-    def __init__(self,name,position):
-        '''This function needs 2 arguments: name,position .'''
-        self.name=name
-        self.whose=name[-1:]
-        self.alive=True
-        self.position=position
-        self.eight_pic,self.six_pic=getpic(name)
-        self.actpic=self.eight_pic if posdic[position].type=='Eight'\
-                     else self.six_pic
-        #self.attribute
-        posdic[position].chess=self
-        #xypos=posdic[position]
-        DISPLAYSURF.blit(self.actpic,posdic[position].coords)
-    def __str__(self):
-        return self.name
-
-class Vecter2:
-    def __init__(self,x,y):
-        self.x=x
-        self.y=y
-        self.dis=math.sqrt(x*x+y*y)
-    def normalize(self):
-        self.x=self.x/self.dis
-        self.y=self.y/self.dis
-
-
-class Block:
-    def __init__(self):
-        self.coords=()
-        self.cangos=[]
-        self.chess=None
-        self.shape=None
-        self.type=''
-def getpic(name):
-    whose=name[-1:]
-    myname=name[:-1]
-    
-    sty=style[myname]
-    #print(sty)
-    return(chessdrawer.generate(myname,whose,8,sty),\
-           chessdrawer.generate(myname,whose,6,sty))
-def get_input(items):
-    global NAME
-    mylister=putin.Lister(items,DISPLAYSURF,pos=(0,0),max_list=4)
-    while True:
-        DISPLAYSURF.blit(background,(0,0))
-        mylister.update()
-        pygame.display.update()
-        for event in pygame.event.get():
-            item=mylister.react(event)
-            if event.type==QUIT:
-                pygame.quit()
-                _exit(0)
-            if event.type==KEYDOWN:
-                if event.key==K_ESCAPE:
-                    pygame.quit()
-                    _exit(0)
-            if item!=None:
-                NAME=item
-                return NAME
-            time.sleep(0.2)
-def setchess():
-    loader.init('place')
-    sdict=loader.read_db()
-    get_input(items=[i for i in sdict.keys()])
-    #poses=sdict[list(sdict.keys())[0]]
-    poses=sdict[NAME]
-    atris=list(attribute.keys())[:-1]
-    for i in range (5):
-        for j in (0,1):
-            #print(sdict[i])
-            Chess(atris[i]+'神',poses[i][j])
-            Chess(atris[i]+'仙',55-poses[i][j])
-    Chess('王神',poses[5][0])
-    Chess('王仙',55-poses[5][0])
-def move (tryblock,firstpos,boomit=False,speed=30):
-    '''To move a chess to another place and make the animation.
-
-This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
-
-    flag=True
-    tempObj=posdic[firstpos].chess
-    if posdic[firstpos].type!=posdic[tryblock].type:
-        tempObj.actpic=tempObj.six_pic if posdic[tryblock].type=='Six'\
-                        else tempObj.eight_pic
-    if posdic[tryblock].chess!= None:
-        posdic[tryblock].chess.alive=False
-        posdic[tryblock].chess= None
-    posdic[firstpos].chess=None
-    oldx,oldy=posdic[firstpos].coords
-    newx,newy=posdic[tryblock].coords
-    movevecter=Vecter2((newx-oldx),(newy-oldy))
-    movevecter.normalize()
-    while flag:
-        if movevecter.x<0:
-            oldx+=max(speed*movevecter.x,(newx-oldx))
-        else:
-            oldx+=min(speed*movevecter.x,(newx-oldx))
-        if movevecter.y<0:
-            oldy+=max(speed*movevecter.y,(newy-oldy))
-        else:
-            oldy+=min(speed*movevecter.y,(newy-oldy))
-        DISPLAYSURF.blit(background,(0,0))
-        DISPLAYSURF.blit(tempObj.actpic,(oldx,oldy))
-        time.sleep(0.05)
-        drawchess()
-        pygame.display.update()
-        if oldx==newx and oldy==newy:
-            flag=False
-    posdic[tryblock].chess=tempObj
-    return
-def Win(whose):
-    print(whose,'Wins!')
+         '王':11}
 def start():
     global block,posdic,DISPLAYSURF#,attribute,show
     XMAR=2
@@ -231,6 +90,155 @@ def start():
         
 
     
+
+class Block:
+    def __init__(self,board,i):
+        self.board,self.n=board,i
+    @property
+    def chess(self):
+        return self.board._posdict[self.i]
+class ChessBoard:
+    def __init__(self,DIS):
+        self._posdic={}
+        self.DIS=DIS
+        files_image_background = 'backimage.jpg'
+        files_sound_boomsound ='Boomsound.mp3'
+        background = pygame.image.load(files_image_background) .convert_alpha()
+        #boomsound = pygame.mixer.Sound(files_sound_boomsound)
+        
+        #Initializing the high light surfaces
+        hlight_pic=dict()
+        hlight_color=(0,200,200,100)
+        for n in (6,8):
+            t_poly=poly.poly(n=8,topleft=0,size=40)
+            highlight=pygame.surface.Surface(t_poly.wh).convert_alpha()
+            highlight.fill((0,0,0,0))
+            pygame.draw.polygon(highlight,hlight_color,t_poly.points,0)
+            hlight_pic[n]=highlight
+
+        XMAR=2
+        YMAR=40
+        size=40
+        GAP=size
+        base1=poly.poly(n=8,size=size,topleft=(XMAR,YMAR))
+        base2=poly.poly(n=8,size=size,topleft=(9.2*size+XMAR+GAP,YMAR+0.35*size))
+        base1=poly.poly(n=8,size=size,topleft=(XMAR+14.2*size+XMAR+2*GAP,YMAR))
+        self.board=poly.ComboGroup(poly.Polygroup(base_poly=base1,EVEN=
+        loader.init('color')
+        style=loader.stra_to_color(loader.read_db())['default']
+        turn='神'
+        firstchess= None
+        firstpos=0
+    def __getitem__(self,n):
+        return Block(self.board,n)
+
+chess_board=ChessBoard(DISPLAYSURF)
+class Chess:
+    '''Include every chess.'''
+    def __init__(self,name,position):
+        '''This function needs 2 arguments: name,position .'''
+        self.name=name
+        self.whose=name[-1:]
+        self.alive=True
+        self.position=position
+        self.pics=getpic(name)
+        self.actpic=self.pics[chess_board[position].n]
+        #self.attribute
+        posdic[position].chess=self
+        #xypos=posdic[position]
+        DISPLAYSURF.blit(self.actpic,posdic[position].coords)
+    def __str__(self):
+        return self.name
+
+class Vecter2:
+    def __init__(self,x,y):
+        self.x=x
+        self.y=y
+        self.dis=math.sqrt(x*x+y*y)
+    def normalize(self):
+        self.x=self.x/self.dis
+        self.y=self.y/self.dis
+
+
+def getpic(name):
+    whose=name[-1:]
+    myname=name[:-1]
+    sty=style[myname]
+    #print(sty)
+    return{8:chessdrawer.generate(myname,whose,8,sty),\
+           6:chessdrawer.generate(myname,whose,6,sty)}
+def get_input(items):
+    global NAME
+    mylister=putin.Lister(items,DISPLAYSURF,pos=(0,0),max_list=4)
+    while True:
+        DISPLAYSURF.blit(background,(0,0))
+        mylister.update()
+        pygame.display.update()
+        for event in pygame.event.get():
+            item=mylister.react(event)
+            if event.type==QUIT:
+                pygame.quit()
+                _exit(0)
+            if event.type==KEYDOWN:
+                if event.key==K_ESCAPE:
+                    pygame.quit()
+                    _exit(0)
+            if item!=None:
+                NAME=item
+                return NAME
+            time.sleep(0.2)
+def setchess():
+    loader.init('place')
+    sdict=loader.read_db()
+    get_input(items=[i for i in sdict.keys()])
+    #poses=sdict[list(sdict.keys())[0]]
+    poses=sdict[NAME]
+    atris=list(attribute.keys())[:-1]
+    for i in range (5):
+        for j in (0,1):
+            #print(sdict[i])
+            Chess(atris[i]+'神',poses[i][j])
+            Chess(atris[i]+'仙',55-poses[i][j])
+    Chess('王神',poses[5][0])
+    Chess('王仙',55-poses[5][0])
+def move (tryblock,firstpos,boomit=False,speed=30):
+    '''To move a chess to another place and make the animation.
+
+This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
+
+    flag=True
+    tempObj=posdic[firstpos].chess
+    if posdic[firstpos].type!=posdic[tryblock].type:
+        tempObj.actpic=tempObj.six_pic if posdic[tryblock].type=='Six'\
+                        else tempObj.eight_pic
+    if posdic[tryblock].chess!= None:
+        posdic[tryblock].chess.alive=False
+        posdic[tryblock].chess= None
+    posdic[firstpos].chess=None
+    oldx,oldy=posdic[firstpos].coords
+    newx,newy=posdic[tryblock].coords
+    movevecter=Vecter2((newx-oldx),(newy-oldy))
+    movevecter.normalize()
+    while flag:
+        if movevecter.x<0:
+            oldx+=max(speed*movevecter.x,(newx-oldx))
+        else:
+            oldx+=min(speed*movevecter.x,(newx-oldx))
+        if movevecter.y<0:
+            oldy+=max(speed*movevecter.y,(newy-oldy))
+        else:
+            oldy+=min(speed*movevecter.y,(newy-oldy))
+        DISPLAYSURF.blit(background,(0,0))
+        DISPLAYSURF.blit(tempObj.actpic,(oldx,oldy))
+        time.sleep(0.05)
+        drawchess()
+        pygame.display.update()
+        if oldx==newx and oldy==newy:
+            flag=False
+    posdic[tryblock].chess=tempObj
+    return
+def Win(whose):
+    print(whose,'Wins!')
     
 def drawchess():
     for i in posdic.values():
