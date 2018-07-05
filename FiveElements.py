@@ -125,7 +125,12 @@ class ChessBoard:
         base3=poly.poly(n=8,size=size,topleft=(XMAR+14.2*size+XMAR+2*GAP,YMAR))
         self.board=poly.ComboGroup((poly.PolyGroup(base_poly=base1,EVEN=4,ODD=3,line=5),\
                               poly.PolyGroup(base_poly=base2,EVEN=7,ODD=6,line=3),\
-                              poly.PolyGroup(base_poly=base3,EVEN=4,ODD=3,line=5)))        loader.init('color')
+                              poly.PolyGroup(base_poly=base3,EVEN=4,ODD=3,line=5)))
+        self.board.set_special_neibors({14:(18,19),
+                                        15:(19,20,21),
+                                        16:(21,22,23),
+                                        17:(3,24)})
+        loader.init('color')
         style=loader.stra_to_color(loader.read_db())['default']
         turn='神'
         firstchess= None
