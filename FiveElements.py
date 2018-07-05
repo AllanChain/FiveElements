@@ -110,7 +110,7 @@ class ChessBoard:
         hlight_pic=dict()
         hlight_color=(0,200,200,100)
         for n in (6,8):
-            t_poly=poly.poly(n=8,topleft=0,size=40)
+            t_poly=poly.poly(n=8,topleft=(0,0),size=40)
             highlight=pygame.surface.Surface(t_poly.wh).convert_alpha()
             highlight.fill((0,0,0,0))
             pygame.draw.polygon(highlight,hlight_color,t_poly.points,0)
@@ -121,10 +121,11 @@ class ChessBoard:
         size=40
         GAP=size
         base1=poly.poly(n=8,size=size,topleft=(XMAR,YMAR))
-        base2=poly.poly(n=8,size=size,topleft=(9.2*size+XMAR+GAP,YMAR+0.35*size))
-        base1=poly.poly(n=8,size=size,topleft=(XMAR+14.2*size+XMAR+2*GAP,YMAR))
-        self.board=poly.ComboGroup(poly.Polygroup(base_poly=base1,EVEN=
-        loader.init('color')
+        base2=poly.poly(n=6,size=size,topleft=(9.2*size+XMAR+GAP,YMAR+0.35*size))
+        base3=poly.poly(n=8,size=size,topleft=(XMAR+14.2*size+XMAR+2*GAP,YMAR))
+        self.board=poly.ComboGroup((poly.PolyGroup(base_poly=base1,EVEN=4,ODD=3,line=5),\
+                              poly.PolyGroup(base_poly=base2,EVEN=7,ODD=6,line=3),\
+                              poly.PolyGroup(base_poly=base3,EVEN=4,ODD=3,line=5)))        loader.init('color')
         style=loader.stra_to_color(loader.read_db())['default']
         turn='神'
         firstchess= None
