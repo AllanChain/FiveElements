@@ -32,8 +32,13 @@ def main():
     chess_pics[8]=pygame.transform.scale(chessurf,base1.rect.iwh)
     chessurf=pygame.image.load('Six.png')
     chess_pics[6]=pygame.transform.scale(chessurf,base2.rect.iwh)
+    x=0
+    FontObj=pygame.font.SysFont('stliti',20)
     for p in pg:
         background.blit(chess_pics[p.n],p.topleft)
+        text=FontObj.render(str(x),True,(0,255,255))
+        background.blit(text,p.center)
+        x+=1
 
     '''for g in pg.groups:
         for p in g:
@@ -49,5 +54,7 @@ def main():
                 return
             if event.type==MOUSEBUTTONDOWN:
                 po=pg.collide(event.pos)
+                print(pg.get_neibors_by_num(pg.coord_to_num(po)))
                 print(po)
+
 main()
