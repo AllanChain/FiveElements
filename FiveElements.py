@@ -13,6 +13,8 @@ turn='神'
 FPS=5
 fpsClock=pygame.time.Clock()
 NAME=''
+firstchess= None
+firstpos=0
 attribute={'金':1,
          '水':4,
          '木':2,
@@ -35,8 +37,8 @@ class Block:
         return self.chessboard.board.get_pos_by_num(self.i)
 class ChessBoard:
     def __init__(self,DIS):
-        global background
-        self._posdict={}
+        global background,hlight_pic
+        self._posdict={n:None for n in range(56)}
         self.DIS=DIS
         self.all_chess=[]
         files_image_background = 'backimage.jpg'
@@ -48,7 +50,7 @@ class ChessBoard:
         hlight_pic=dict()
         hlight_color=(0,200,200,100)
         for n in (6,8):
-            t_poly=poly.poly(n=8,topleft=(0,0),size=40)
+            t_poly=poly.poly(n=n,topleft=(0,0),size=40)
             highlight=pygame.surface.Surface(t_poly.rect.iwh).convert_alpha()
             highlight.fill((0,0,0,0))
             pygame.draw.polygon(highlight,hlight_color,t_poly.points,0)
@@ -75,14 +77,14 @@ class ChessBoard:
         chess_pics[6]=pygame.transform.scale(chessurf,base2.rect.iwh)
         for p in self.board:
             background.blit(chess_pics[p.n],p.topleft)
-        firstchess= None
-        firstpos=0
+
     def __getitem__(self,n):
         return Block(self,n)
     def draw(self):
+        self.DIS.blit(background,(0,0))
         for chess in self.all_chess:
-            DISPLAYSURF.blit(chess.actpic,chess.block.topleft)
-        pygame.display.update()
+            self.DIS.blit(chess.actpic,chess.block.topleft)
+        #pygame.display.update()
 
 chess_board=ChessBoard(DISPLAYSURF)
 class Chess:
@@ -120,6 +122,8 @@ def getpic(name):
     #print(sty)
     return{8:chessdrawer.generate(myname,whose,8,sty),\
            6:chessdrawer.generate(myname,whose,6,sty)}
+
+
 def get_input(items):
     global NAME
     mylister=putin.Lister(items,DISPLAYSURF,pos=(0,0),max_list=4)
@@ -140,6 +144,8 @@ def get_input(items):
                 NAME=item
                 return NAME
             time.sleep(0.2)
+
+
 def setchess():
     loader.init('place')
     sdict=loader.read_db()
@@ -154,22 +160,23 @@ def setchess():
             Chess(atris[i]+'仙',55-poses[i][j])
     Chess('王神',poses[5][0])
     Chess('王仙',55-poses[5][0])
+
+
 def move (tryblock,firstpos,boomit=False,speed=30):
     '''To move a chess to another place and make the animation.
 
 This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
 
     flag=True
-    tempObj=posdic[firstpos].chess
-    if posdic[firstpos].type!=posdic[tryblock].type:
-        tempObj.actpic=tempObj.six_pic if posdic[tryblock].type=='Six'\
-                        else tempObj.eight_pic
-    if posdic[tryblock].chess!= None:
-        posdic[tryblock].chess.alive=False
-        posdic[tryblock].chess= None
-    posdic[firstpos].chess=None
-    oldx,oldy=posdic[firstpos].coords
-    newx,newy=posdic[tryblock].coords
+    tempObj=chess_board[firstpos].chess
+    if chess_board[firstpos].n!=chess_board[tryblock].n:
+        tempObj.actpic=tempObj.pics[chess_board[tryblock].n]
+    if chess_board[tryblock].chess!= None:
+        chess_board[tryblock].chess.alive=False
+        chess_board[tryblock].chess= None
+    chess_board[firstpos].chess=None
+    oldx,oldy=chess_board[firstpos].topleft
+    newx,newy=chess_board[tryblock].topleft
     movevecter=Vecter2((newx-oldx),(newy-oldy))
     movevecter.normalize()
     while flag:
@@ -184,15 +191,18 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
         DISPLAYSURF.blit(background,(0,0))
         DISPLAYSURF.blit(tempObj.actpic,(oldx,oldy))
         time.sleep(0.05)
-        drawchess()
+        chess_board.draw()
         pygame.display.update()
         if oldx==newx and oldy==newy:
             flag=False
-    posdic[tryblock].chess=tempObj
+    chess_board[tryblock].chess=tempObj
     return
+
+
 def Win(whose):
     print(whose,'Wins!')
-    
+
+
 def drawchess():
     for i in posdic.values():
         if i.chess !=None:
@@ -229,19 +239,11 @@ def main():
     setchess()
     hlightflag=None
     cpos=0
+    event=pygame.event.Event(MOUSEMOTION,{'pos':pygame.mouse.get_pos()})
+    pygame.event.post(event)
     global firstchess
     while True:
-        mou=pygame.mouse.get_pos()
-        blockinfo=None
-        p=chess_board.board.collide(mou)
-        if p!=None:
-            cpos=chess_board.board.coord_to_num(p)
-            blockinfo=chess_board[cpos]
-            hflag=True
-##          if blockinfo.chess!= None and blockinfo.chess.whose!= turn:
-##              hflag=False
-        else:
-            hflag=False
+
         for event in pygame.event.get():
             if event.type==QUIT:
                 pygame.quit()
@@ -250,13 +252,24 @@ def main():
                 if event.key==K_ESCAPE:
                     pygame.quit()
                     return
+            elif event.type == MOUSEMOTION:
+                blockinfo = None
+                p = chess_board.board.collide(event.pos)
+                if p is not None:
+                    cpos = chess_board.board.coord_to_num(p)
+                    blockinfo = chess_board[cpos]
+                    hflag = True
+                    ##          if blockinfo.chess!= None and blockinfo.chess.whose!= turn:
+                    ##              hflag=False
+                else:
+                    hflag = False
             elif event.type==MOUSEBUTTONDOWN and blockinfo!=None\
                  and event.button==1:
                 cango=False
                 if firstchess != None and firstchess.whose==turn:
                    #and blockinfo.chess==None:
                     tryblock=cpos
-                    cango= tryblock in chess_board[firstpos].board.get_neibors_by_num(firstpos)
+                    cango= tryblock in chess_board[firstpos].chessboard.board.get_neibors_by_num(firstpos)
                     boomit=False
                     if blockinfo.chess!= None:
                         if blockinfo.chess.whose!=turn and cango:
@@ -284,7 +297,7 @@ def main():
         #drawchess()
         chess_board.draw()
         if hflag:
-            DISPLAYSURF.blit(hlightdict[blockinfo.type],blockinfo.coords)
+            DISPLAYSURF.blit(hlight_pic[blockinfo.n],blockinfo.topleft)
         pygame.display.update()
         fpsClock.tick(FPS)
 
