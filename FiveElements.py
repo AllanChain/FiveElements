@@ -93,7 +93,6 @@ class ChessBoard:
         for chess in self.all_chess:
             if chess.block!=None:
                 self.DIS.blit(chess.actpic,chess.block.topleft)
-        #pygame.display.update()
 
 chess_board=ChessBoard(DISPLAYSURF)
 class Chess:
@@ -106,12 +105,9 @@ class Chess:
         self.position=position
         self.pics=getpic(name)
         self.actpic=self.pics[chess_board[position].n]
-        #self.attribute
         chess_board[position].chess=self
         self.block=chess_board[position]
         chess_board.all_chess.append(self)
-        #xypos=posdic[position]
-        #DISPLAYSURF.blit(self.actpic,posdic[position].coords)
     def __str__(self):
         return self.name
 
@@ -214,11 +210,6 @@ def Win(whose):
     print(whose,'Wins!')
 
 
-def drawchess():
-    for i in posdic.values():
-        if i.chess !=None:
-            DISPLAYSURF.blit(i.chess.actpic,i.coords)
-
 def eatable(chessA,chessB,chesspos):
     '''To check if ChessA can eat ChessB.If so, return True,
 
@@ -306,9 +297,7 @@ def main():
                     firstchess=blockinfo.chess
                     firstpos=cpos
                     print ('firstchess set')
-        #DISPLAYSURF.blit(background,(0,0))#画图
-        #drawchess()
-        chess_board.draw()
+       chess_board.draw()
         if hflag:
             DISPLAYSURF.blit(hlight_pic[blockinfo.n],blockinfo.topleft)
         pygame.display.update()
