@@ -41,8 +41,8 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
         chess_board[tryblock].chess= None
     chess_board[firstpos].chess=None
     def animate(firstpos,tryblock,tempObj):
-        oldx,oldy=chess_board[firstpos].coords
-        newx,newy=chess_board[tryblock].coords
+        oldx,oldy=chess_board[firstpos].topleft
+        newx,newy=chess_board[tryblock].topleft
         movevecter=Vecter2((newx-oldx),(newy-oldy))
         movevecter.normalize()
         while True:
@@ -106,7 +106,7 @@ def move_animate():
 ##            print(removes)
     FPS=10
 def main():
-    setchess()
+    #setchess()
     #DISPLAYSURF.blit(background,(0,0))#画图
     chess_board.draw()
     cpos=0
@@ -174,6 +174,8 @@ def main():
         pygame.display.update()
         fpsClock.tick(FPS)
 if __name__=='__main__':
-    chess_board=ChessBoard(DISPLAYSURF)
+    #chess_board=ChessBoard(DISPLAYSURF)
+    setchess()
+    print(chess_board.all_chess)
     main()
 
