@@ -33,7 +33,7 @@ class Block:
     def chess(self,ch):
         if ch!= None:
             ch.block=self
-        else:
+        elif self.chessboard._posdict[self.i] is not None:
             self.chessboard._posdict[self.i].block=None
         self.chessboard._posdict[self.i]=ch
     @property
