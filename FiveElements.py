@@ -31,6 +31,10 @@ class Block:
         return self.chessboard._posdict[self.i]
     @chess.setter
     def chess(self,ch):
+        if ch!= None:
+            ch.block=self
+        else:
+            self.chessboard._posdict[self.i].block=None
         self.chessboard._posdict[self.i]=ch
     @property
     def topleft(self):
@@ -69,7 +73,11 @@ class ChessBoard:
         self.board.set_special_neibors({14:(18,19),
                                         15:(19,20,21),
                                         16:(21,22,23),
-                                        17:(3,24)})
+                                        17:(3,24),
+                                        38:(31,32),
+                                        39:(32,33,34),
+                                        40:(34,35,36),
+                                        41:(36,37)})
         chess_pics={}
         chessurf=pygame.image.load('Eight.png')
         chess_pics[8]=pygame.transform.scale(chessurf,base1.rect.iwh)
@@ -83,7 +91,8 @@ class ChessBoard:
     def draw(self):
         self.DIS.blit(background,(0,0))
         for chess in self.all_chess:
-            self.DIS.blit(chess.actpic,chess.block.topleft)
+            if chess.block!=None:
+                self.DIS.blit(chess.actpic,chess.block.topleft)
         #pygame.display.update()
 
 chess_board=ChessBoard(DISPLAYSURF)
@@ -189,7 +198,7 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
         else:
             oldy+=min(speed*movevecter.y,(newy-oldy))
         chess_board.draw()
-        DISPLAYSURF.blit(background,(0,0))
+        #DISPLAYSURF.blit(background,(0,0))
         DISPLAYSURF.blit(tempObj.actpic,(oldx,oldy))
         time.sleep(0.05)
         
@@ -197,6 +206,7 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
         if oldx==newx and oldy==newy:
             flag=False
     chess_board[tryblock].chess=tempObj
+    print(chess_board[tryblock].chess,tempObj)
     return
 
 
@@ -267,7 +277,7 @@ def main():
             elif event.type==MOUSEBUTTONDOWN and blockinfo!=None\
                  and event.button==1:
                 cango=False
-                print(firstchess)
+                #print(firstchess)
                 if firstchess != None and firstchess.whose==turn:
                    #and blockinfo.chess==None:
                     tryblock=cpos
@@ -276,7 +286,7 @@ def main():
                     if blockinfo.chess!= None:
                         if blockinfo.chess.whose!=turn and cango:
                             cango=eatable(firstchess,blockinfo.chess,tryblock)
-                            print(cango)
+                            #print(cango)
                             if cango:
                                 boomit=True
                         elif blockinfo.chess.whose==turn:
@@ -285,7 +295,7 @@ def main():
                             print ('firstchess set')
                             cango=None
                     if cango:
-                        print('Here!')
+                        #print('Here!')
                         move(tryblock,firstpos,boomit)
                         turn='仙' if turn=='神' else '神'
                         firstchess=None
