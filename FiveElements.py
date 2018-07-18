@@ -297,7 +297,7 @@ def main():
                     firstchess=blockinfo.chess
                     firstpos=cpos
                     print ('firstchess set')
-       chess_board.draw()
+        chess_board.draw()
         if hflag:
             DISPLAYSURF.blit(hlight_pic[blockinfo.n],blockinfo.topleft)
         pygame.display.update()
