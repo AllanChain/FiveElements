@@ -1,5 +1,5 @@
 from FiveElements import chess_board,get_input,Chess,Vecter2
-from FiveElements import DISPLAYSURF,background,fpsClock,hlight_pic
+from FiveElements import DISPLAYSURF,hlight_pic
 from math import copysign
 import pygame
 from pygame.locals import *
@@ -11,6 +11,7 @@ loader.init('place')
 stra_dict=loader.read_db()
 firstchess= None
 firstpos=0
+fpsClock=pygame.time.Clock()
 attribute={'金':1,
          '水':4,
          '木':2,
@@ -103,7 +104,7 @@ def hflag_animate(_blockinfo):
     
 def move_animate():
     global FPS
-    DISPLAYSURF.blit(background,(0,0))
+    #DISPLAYSURF.blit(background,(0,0))
     chess_board.draw()
     if MOVING!=[]:
         removes=[]
