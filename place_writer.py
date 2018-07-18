@@ -61,9 +61,13 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
     return
 
 def save_stra():
-    filt=lambda b:b[1].chess!=None and b[1].chess.whose=='神'
-    chesses=list(filter(filt,posdic.items()))
-    chesses=list(map(lambda x:(x[0],x[1].chess),chesses))
+    filt=lambda c:c.whose=='神' and c.block!=None
+    chesses=list(filter(filt,chess_board.all_chess))
+    chesses=list(map(lambda c:(c.block.i,c),chesses))
+    
+##    filt=lambda b:b[1].chess!=None and b[1].chess.whose=='神'
+##    chesses=list(filter(filt,posdic.items()))
+##    chesses=list(map(lambda x:(x[0],x[1].chess),chesses))
     poses={k:[] for k,v in attribute.items()}
     print(poses)
     if len(chesses)!=11:
@@ -77,7 +81,7 @@ def save_stra():
     stra_dict[NAME]=poses
     print(NAME,poses,stra_dict)
     loader.write_db(stra_dict,mode='w')
-    for i in posdic.values():
+    for i in chess_board:
         i.chess=None
     setchess()
 def hflag_animate(_blockinfo):
