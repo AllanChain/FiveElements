@@ -29,22 +29,20 @@ def move (tryblock,firstpos,swap=False,speed=30):
 This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
 
     
-    tempObj=posdic[firstpos].chess
+    tempObj=chess_board[firstpos].chess
     if swap:
-        tempObj2=posdic[tryblock].chess
-        if posdic[firstpos].type!=posdic[tryblock].type:
-            tempObj2.actpic=tempObj2.six_pic if posdic[firstpos].type=='Six'\
-                        else tempObj2.eight_pic
-    if posdic[firstpos].type!=posdic[tryblock].type:
-        tempObj.actpic=tempObj.six_pic if posdic[tryblock].type=='Six'\
-                        else tempObj.eight_pic
-    if posdic[tryblock].chess!= None:
-        posdic[tryblock].chess.alive=False
-        posdic[tryblock].chess= None
-    posdic[firstpos].chess=None
+        tempObj2=chess_board[tryblock].chess
+        if chess_board[firstpos].n!=chess_board[tryblock].n:
+            tempObj2.actpic=tempObj2.pics[chess_board[firstpos].n]
+    if chess_board[firstpos].n!=chess_board[tryblock].n:
+        tempObj.actpic=tempObj.pics[chess_board[tryblock].n]
+    if chess_board[tryblock].chess!= None:
+        chess_board[tryblock].chess.alive=False
+        chess_board[tryblock].chess= None
+    chess_board[firstpos].chess=None
     def animate(firstpos,tryblock,tempObj):
-        oldx,oldy=posdic[firstpos].coords
-        newx,newy=posdic[tryblock].coords
+        oldx,oldy=chess_board[firstpos].coords
+        newx,newy=chess_board[tryblock].coords
         movevecter=Vecter2((newx-oldx),(newy-oldy))
         movevecter.normalize()
         while True:
@@ -55,7 +53,7 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
             if oldx==newx and oldy==newy:
                 break
             yield None
-        posdic[tryblock].chess=tempObj
+        chess_board[tryblock].chess=tempObj
     MOVING.append(animate(firstpos,tryblock,tempObj))
     if swap:
         MOVING.append(animate(tryblock,firstpos,tempObj2))
@@ -84,12 +82,12 @@ def save_stra():
     setchess()
 def hflag_animate(blockinfo):
     yield None
-    DISPLAYSURF.blit(hlightdict[blockinfo.type],blockinfo.coords)
+    DISPLAYSURF.blit(hlight_pic[blockinfo.n],blockinfo.topleft)
     
 def move_animate():
     global FPS
     DISPLAYSURF.blit(background,(0,0))
-    drawchess()
+    chess_board.draw()
     if MOVING!=[]:
         removes=[]
         FPS=30
@@ -107,29 +105,37 @@ def move_animate():
     FPS=10
 def main():
     setchess()
-    DISPLAYSURF.blit(background,(0,0))#画图
-    drawchess()
+    #DISPLAYSURF.blit(background,(0,0))#画图
+    chess_board.draw()
     hlightflag=None
     cpos=0
+    event=pygame.event.Event(MOUSEMOTION,{'pos':pygame.mouse.get_pos()})
+    pygame.event.post(event)
     global firstchess
     while True:
         move_animate()
         mou=pygame.mouse.get_pos()
         blockinfo=None
-        for j in posdic.keys():
-            if posdic[j].shape.collide(mou):
-                blockinfo=posdic[j]
-                hflag=True
-##                if blockinfo.chess!= None and blockinfo.chess.whose!= turn:
-##                    hflag=False
-                cpos=j
-                break
+        p = chess_board.board.collide(event.pos)
+        if p is not None:
+            cpos = chess_board.board.coord_to_num(p)
+            blockinfo = chess_board[cpos]
+            hflag = True
         else:
             hflag=False
         for event in pygame.event.get():
             if event.type==QUIT:
                 pygame.quit()
                 return
+            elif event.type == MOUSEMOTION:
+                blockinfo = None
+                p = chess_board.board.collide(event.pos)
+                if p is not None:
+                    cpos = chess_board.board.coord_to_num(p)
+                    blockinfo = chess_board[cpos]
+                    hflag = True
+                else:
+                    hflag = False
             elif event.type==KEYDOWN:
                 if event.key==K_ESCAPE:
                     pygame.quit()
@@ -147,7 +153,7 @@ def main():
                 cango=False
                 tryblock=cpos
                 print(cpos)
-                chessinblock=posdic[tryblock].chess
+                chessinblock=chess_board[tryblock].chess
                 if firstchess != None and chessinblock != firstchess:#对称改变双方
                    #and blockinfo.chess==None:
                     swap=False
@@ -173,6 +179,6 @@ def main():
         pygame.display.update()
         fpsClock.tick(FPS)
 if __name__=='__main__':
-    start()
+    chess_board=ChessBoard(DISPLAYSURF)
     main()
 
