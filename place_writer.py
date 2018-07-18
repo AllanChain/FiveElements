@@ -80,9 +80,11 @@ def save_stra():
     for i in posdic.values():
         i.chess=None
     setchess()
-def hflag_animate(blockinfo):
+def hflag_animate(_blockinfo):
+    #print('pre',_blockinfo)
     yield None
-    DISPLAYSURF.blit(hlight_pic[blockinfo.n],blockinfo.topleft)
+    #print('then',_blockinfo)
+    DISPLAYSURF.blit(hlight_pic[_blockinfo.n],_blockinfo.topleft)
     
 def move_animate():
     global FPS
@@ -107,7 +109,6 @@ def main():
     setchess()
     #DISPLAYSURF.blit(background,(0,0))#画图
     chess_board.draw()
-    hlightflag=None
     cpos=0
     event=pygame.event.Event(MOUSEMOTION,{'pos':pygame.mouse.get_pos()})
     pygame.event.post(event)
@@ -115,27 +116,21 @@ def main():
     while True:
         move_animate()
         mou=pygame.mouse.get_pos()
-        blockinfo=None
-        p = chess_board.board.collide(event.pos)
-        if p is not None:
-            cpos = chess_board.board.coord_to_num(p)
-            blockinfo = chess_board[cpos]
-            hflag = True
-        else:
-            hflag=False
         for event in pygame.event.get():
             if event.type==QUIT:
                 pygame.quit()
                 return
             elif event.type == MOUSEMOTION:
                 blockinfo = None
+                print(event.pos)
                 p = chess_board.board.collide(event.pos)
                 if p is not None:
                     cpos = chess_board.board.coord_to_num(p)
                     blockinfo = chess_board[cpos]
+                    #print(blockinfo)
                     hflag = True
                 else:
-                    hflag = False
+                    hflag=False
             elif event.type==KEYDOWN:
                 if event.key==K_ESCAPE:
                     pygame.quit()
