@@ -188,10 +188,11 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
             oldy+=max(speed*movevecter.y,(newy-oldy))
         else:
             oldy+=min(speed*movevecter.y,(newy-oldy))
+        chess_board.draw()
         DISPLAYSURF.blit(background,(0,0))
         DISPLAYSURF.blit(tempObj.actpic,(oldx,oldy))
         time.sleep(0.05)
-        chess_board.draw()
+        
         pygame.display.update()
         if oldx==newx and oldy==newy:
             flag=False
@@ -266,10 +267,11 @@ def main():
             elif event.type==MOUSEBUTTONDOWN and blockinfo!=None\
                  and event.button==1:
                 cango=False
+                print(firstchess)
                 if firstchess != None and firstchess.whose==turn:
                    #and blockinfo.chess==None:
                     tryblock=cpos
-                    cango= tryblock in chess_board[firstpos].chessboard.board.get_neibors_by_num(firstpos)
+                    cango= tryblock in chess_board.board.get_neibors_by_num(firstpos)
                     boomit=False
                     if blockinfo.chess!= None:
                         if blockinfo.chess.whose!=turn and cango:
@@ -283,6 +285,7 @@ def main():
                             print ('firstchess set')
                             cango=None
                     if cango:
+                        print('Here!')
                         move(tryblock,firstpos,boomit)
                         turn='仙' if turn=='神' else '神'
                         firstchess=None
