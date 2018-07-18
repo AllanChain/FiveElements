@@ -87,6 +87,8 @@ class ChessBoard:
             background.blit(chess_pics[p.n],p.topleft)
 
     def __getitem__(self,n):
+        if n>=self.board.total:
+            raise IndexError('Index out of range')
         return Block(self,n)
     def draw(self):
         self.DIS.blit(background,(0,0))
