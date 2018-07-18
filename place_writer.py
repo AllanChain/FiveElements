@@ -1,11 +1,22 @@
-from FiveElements import *
+from FiveElements import chess_board,get_input,Chess,Vecter2
+from FiveElements import DISPLAYSURF,background,fpsClock,hlight_pic
 from math import copysign
+import pygame
+from pygame.locals import *
 from random import random
 import loader#,putin
 from os import _exit
 
 loader.init('place')
 stra_dict=loader.read_db()
+firstchess= None
+firstpos=0
+attribute={'金':1,
+         '水':4,
+         '木':2,
+         '火':5,
+         '土':3,
+         '王':11}
 print(stra_dict)
 MOVING=[]
 NAME=''
