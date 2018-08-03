@@ -7,13 +7,14 @@ Developed under Windows, python3.6, and pygame 1.9.3
 - Pygame
 - And submodule poly
 ### Usage
-**NOTE:**Since I have not upload my package to PyPi, you have to cd `FiveElements` and run
+**NOTE**:Since I have not upload my package to PyPi, you have to cd `FiveElements` and run
 ```
 pip install -e poly
 ```
 Then to start the game , just run `python FiveElements.py`
 ### Development Notice
-It's just under development now .- ~~I'm adding strategy controlling system to it~~
+It's just under development now .
+- ~~I'm adding strategy controlling system to it~~
 - Better Animation is in progress
 - And the stablity too
 
