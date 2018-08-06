@@ -16,10 +16,10 @@ NAME=''
 firstchess= None
 firstpos=0
 attribute={'金':1,
-         '水':4,
          '木':2,
-         '火':5,
          '土':3,
+         '水':4,
+         '火':5,
          '王':11}
 class Block:
     def __init__(self,chessboard,i):
@@ -213,9 +213,16 @@ def Win(whose):
 
 
 def eatable(chessA,chessB,chesspos):
-    '''To check if ChessA can eat ChessB.If so, return True,
+    '''To check if ChessA can eat ChessB.If so, return True.
 
-This function needs 3 arguments: ChessA ,ChessB ,ChessBpos.'''
+    Parameters
+    ----------
+    ChessA ,ChessB ,ChessBpos.
+
+    Returns
+    -------
+    flag : bool
+    '''
     if chessA.whose!=chessB.whose:
         print (chessA.whose,chessB.whose)
         difindex=attribute.get(chessA.name[:-1])-attribute.get(chessB.name[:-1])
@@ -227,6 +234,7 @@ This function needs 3 arguments: ChessA ,ChessB ,ChessBpos.'''
         else:area='战'
         if difindex in (-2,3,0) and area=='战':
             return True
+        #if the king is eaten
         if attribute.get(chessB.name[:-1])==11:
             Win(chessA.whose)
             return True
