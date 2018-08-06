@@ -16,6 +16,11 @@ pygame made game related to five elements or 五行
 pip install -e poly
 ```
 Then to start the game , just run `python FiveElements.py`
+### Game Rule
+- Every chess and only move one block at a time.
+- 相克则吃
+> 火克金，则火可吃金
+- Next rules may change. I admmitI'm not a good rule-maker.
 ### Development Notice
 It's just under development now .
 - ~~I'm adding strategy controlling system to it~~
