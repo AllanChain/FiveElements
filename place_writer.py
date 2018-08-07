@@ -107,22 +107,15 @@ def move_animate():
     #DISPLAYSURF.blit(background,(0,0))
     chess_board.draw()
     if MOVING!=[]:
-        removes=[]
         FPS=30
         for i in MOVING[:]:
             try:
                 next(i)
             except StopIteration:
                 MOVING.remove(i)
-                #removes.append(i)
-##        for i in removes:
-##            MOVING.remove(i)
         pygame.display.update()
-##        if random()>0.7:
-##            print(removes)
     FPS=10
 def main():
-    #setchess()
     #DISPLAYSURF.blit(background,(0,0))#画图
     chess_board.draw()
     cpos=0
@@ -138,12 +131,10 @@ def main():
                 return
             elif event.type == MOUSEMOTION:
                 blockinfo = None
-                print(event.pos)
                 p = chess_board.board.collide(event.pos)
                 if p is not None:
                     cpos = chess_board.board.coord_to_num(p)
                     blockinfo = chess_board[cpos]
-                    #print(blockinfo)
                     hflag = True
                 else:
                     hflag=False
@@ -182,15 +173,11 @@ def main():
                     firstchess=blockinfo.chess
                     firstpos=cpos
                     print ('firstchess set')
-##        DISPLAYSURF.blit(background,(0,0))#画图
-##        drawchess()
         if hflag:
             MOVING.append(hflag_animate(blockinfo))
-##            DISPLAYSURF.blit(hlightdict[blockinfo.type],blockinfo.coords)
         pygame.display.update()
         fpsClock.tick(FPS)
 if __name__=='__main__':
-    #chess_board=ChessBoard(DISPLAYSURF)
     setchess()
     print(chess_board.all_chess)
     main()
