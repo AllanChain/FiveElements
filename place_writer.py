@@ -62,7 +62,6 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
             oldx+=copysign(min(abs(speed*movevecter.x),abs(newx-oldx)),movevecter.x)
             oldy+=copysign(min(abs(speed*movevecter.y),abs(newy-oldy)),movevecter.y)
             DISPLAYSURF.blit(tempObj.actpic,(oldx,oldy))
-            #time.sleep(0.05
             if oldx==newx and oldy==newy:
                 break
             yield None
@@ -70,7 +69,6 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
     MOVING.append(animate(firstpos,tryblock,tempObj))
     if swap:
         MOVING.append(animate(tryblock,firstpos,tempObj2))
-        #posdic[firstpos].chess=tempObj2
     return
 
 def save_stra():
@@ -109,7 +107,6 @@ def move_animate():
         pygame.display.update()
     FPS=10
 def main():
-    #DISPLAYSURF.blit(background,(0,0))#画图
     chess_board.draw()
     cpos=0
     event=pygame.event.Event(MOUSEMOTION,{'pos':pygame.mouse.get_pos()})
