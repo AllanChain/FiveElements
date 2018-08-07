@@ -48,6 +48,7 @@ This function needs 3 arguments: tryblock,firstpos,boomit(a boolean)'''
             tempObj2.actpic=tempObj2.pics[chess_board[firstpos].n]
     if chess_board[firstpos].n!=chess_board[tryblock].n:
         tempObj.actpic=tempObj.pics[chess_board[tryblock].n]
+    #Should this be removed?
     if chess_board[tryblock].chess!= None:
         chess_board[tryblock].chess.alive=False
         chess_board[tryblock].chess= None
