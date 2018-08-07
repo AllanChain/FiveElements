@@ -76,10 +76,6 @@ def save_stra():
     filt=lambda c:c.whose=='神' and c.block!=None
     chesses=list(filter(filt,chess_board.all_chess))
     chesses=list(map(lambda c:(c.block.i,c),chesses))
-    
-##    filt=lambda b:b[1].chess!=None and b[1].chess.whose=='神'
-##    chesses=list(filter(filt,posdic.items()))
-##    chesses=list(map(lambda x:(x[0],x[1].chess),chesses))
     poses={k:[] for k,v in attribute.items()}
     print(poses)
     if len(chesses)!=11:
@@ -89,7 +85,6 @@ def save_stra():
         print(k,v)
     poses['王'].append(0)
     poses=list(map(tuple,poses.values()))
-    #name=input('Please input your map name:')
     stra_dict[NAME]=poses
     print(NAME,poses,stra_dict)
     loader.write_db(stra_dict,mode='w')
@@ -97,14 +92,11 @@ def save_stra():
         i.chess=None
     setchess()
 def hflag_animate(_blockinfo):
-    #print('pre',_blockinfo)
     yield None
-    #print('then',_blockinfo)
     DISPLAYSURF.blit(hlight_pic[_blockinfo.n],_blockinfo.topleft)
     
 def move_animate():
     global FPS
-    #DISPLAYSURF.blit(background,(0,0))
     chess_board.draw()
     if MOVING!=[]:
         FPS=30
